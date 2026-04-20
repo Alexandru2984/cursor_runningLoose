@@ -1,22 +1,25 @@
 import { Pomodoro } from './components/Pomodoro'
 import { FocusLine } from './components/FocusLine'
 import { Scratchpad } from './components/Scratchpad'
+import { SettingsPanel } from './components/SettingsPanel'
 
 function App() {
   return (
-    <div className="mx-auto flex min-h-svh max-w-5xl flex-col gap-6 px-4 py-10 font-sans md:px-8">
+    <div className="mx-auto flex min-h-svh max-w-5xl flex-col gap-6 px-4 py-10 md:px-8">
       <header className="text-center md:text-left">
         <p className="mb-1 text-xs font-medium tracking-widest text-amber-500/80 uppercase">
           autoCursor
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-50 md:text-4xl">
+        <h1 className="cantier-heading text-3xl font-semibold tracking-tight md:text-4xl">
           Cantier
         </h1>
-        <p className="mt-2 max-w-xl text-sm text-zinc-400 md:text-base">
-          Un hub local, fără cont și fără server: timer Pomodoro, o linie de focus și notițe care
-          rămân pe mașina ta.
+        <p className="cantier-tagline mt-2 max-w-xl text-sm md:text-base">
+          Hub local: Pomodoro, obiectiv de sesiune și notițe. Poți instala aplicația (PWA), face
+          backup JSON și ajusta contrastul sau mărimea textului.
         </p>
       </header>
+
+      <SettingsPanel />
 
       <FocusLine />
 
@@ -25,11 +28,9 @@ function App() {
         <Scratchpad />
       </div>
 
-      <footer className="mt-auto border-t border-zinc-800/60 pt-6 text-center text-xs text-zinc-600 md:text-left">
-        Construit în folderul tău <span className="text-zinc-500">autoCursor</span> — rulează cu{' '}
-        <kbd className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">
-          npm run dev
-        </kbd>
+      <footer className="cantier-footer mt-auto border-t pt-6 text-center text-xs md:text-left">
+        Construit în folderul tău <span className="cantier-body">autoCursor</span> — dezvoltare:{' '}
+        <kbd className="cantier-kbd px-1.5 py-0.5">npm run dev</kbd>
       </footer>
     </div>
   )

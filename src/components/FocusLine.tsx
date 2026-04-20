@@ -1,11 +1,12 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { STORAGE } from '../lib/storageKeys'
 
 export function FocusLine() {
-  const [line, setLine] = useLocalStorage('cantier-focus', '')
+  const [line, setLine] = useLocalStorage(STORAGE.focus, '')
 
   return (
-    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 shadow-lg backdrop-blur-sm">
-      <label htmlFor="focus-line" className="mb-2 block text-xs font-medium text-zinc-500">
+    <section className="cantier-surface p-5 shadow-lg">
+      <label htmlFor="focus-line" className="cantier-muted mb-2 block text-xs font-medium">
         Obiectiv pentru această sesiune
       </label>
       <input
@@ -14,7 +15,7 @@ export function FocusLine() {
         value={line}
         onChange={(e) => setLine(e.target.value)}
         placeholder="Ex.: termină capitolul 3, trimite mailul către…"
-        className="w-full rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-amber-500/40 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+        className="cantier-input w-full px-4 py-3 text-sm"
         maxLength={200}
       />
     </section>

@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useSettings } from '../context/useSettings'
+import { STORAGE } from '../lib/storageKeys'
+import { notifyCantier } from '../lib/notify'
 
 type Mode = 'work' | 'short' | 'long'
 
@@ -44,10 +48,25 @@ function isTypingTarget(el: EventTarget | null) {
 }
 
 export function Pomodoro() {
+  const { settings } = useSettings()
+  const soundRef = useRef(settings.soundEnabled)
+  const notifyRef = useRef(settings.notificationsEnabled)
+
+  useEffect(() => {
+    soundRef.current = settings.soundEnabled
+  }, [settings.soundEnabled])
+
+  useEffect(() => {
+    notifyRef.current = settings.notificationsEnabled
+  }, [settings.notificationsEnabled])
+
   const [mode, setMode] = useState<Mode>('work')
   const [remaining, setRemaining] = useState(DURATIONS.work)
   const [running, setRunning] = useState(false)
-  const [completedWork, setCompletedWork] = useState(0)
+  const [completedWork, setCompletedWork] = useLocalStorage<number>(
+    STORAGE.pomodoroCompleted,
+    0,
+  )
   const tickRef = useRef<number | null>(null)
 
   const modeRef = useRef(mode)
@@ -83,8 +102,18 @@ export function Pomodoro() {
 
           queueMicrotask(() => {
             const m = modeRef.current
-            beep()
+            if (soundRef.current) beep()
             setRunning(false)
+
+            if (notifyRef.current) {
+              if (m === 'work') {
+                notifyCantier('Cantier', 'Rundă de muncă terminată — e timpul pentru o pauză.')
+              } else if (m === 'short') {
+                notifyCantier('Cantier', 'Pauza scurtă s-a terminat.')
+              } else {
+                notifyCantier('Cantier', 'Pauza lungă s-a terminat.')
+              }
+            }
 
             if (m === 'work') {
               const next = completedRef.current + 1
@@ -113,7 +142,7 @@ export function Pomodoro() {
     return () => {
       if (tickRef.current != null) window.clearInterval(tickRef.current)
     }
-  }, [running])
+  }, [running, setCompletedWork])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -141,13 +170,14 @@ export function Pomodoro() {
   const dashOffset = circumference * (1 - progress)
 
   return (
-    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 shadow-xl backdrop-blur-sm">
+    <section className="cantier-surface p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold tracking-wide text-zinc-400 uppercase">
+        <h2 className="cantier-card-heading text-sm font-semibold tracking-wide uppercase">
           Pomodoro
         </h2>
-        <span className="text-xs text-zinc-500">
-          Cicluri: <span className="font-mono text-amber-400/90">{completedWork}</span>
+        <span className="cantier-muted text-xs">
+          Cicluri:{' '}
+          <span className="font-mono text-amber-500/90 tabular-nums">{completedWork}</span>
         </span>
       </div>
 
@@ -161,7 +191,7 @@ export function Pomodoro() {
               fill="none"
               stroke="currentColor"
               strokeWidth="8"
-              className="text-zinc-800"
+              className="cantier-ring-track"
             />
             <circle
               cx="60"
@@ -171,7 +201,7 @@ export function Pomodoro() {
               stroke="currentColor"
               strokeWidth="8"
               strokeLinecap="round"
-              className="text-amber-500/90 transition-[stroke-dashoffset] duration-1000 ease-linear"
+              className="cantier-ring-fill transition-[stroke-dashoffset] duration-1000 ease-linear"
               style={{
                 strokeDasharray: circumference,
                 strokeDashoffset: dashOffset,
@@ -179,10 +209,10 @@ export function Pomodoro() {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-mono text-2xl font-semibold tracking-tight text-zinc-100 tabular-nums">
+            <span className="cantier-timer font-mono text-2xl font-semibold tracking-tight tabular-nums">
               {formatMmSs(remaining)}
             </span>
-            <span className="text-xs text-zinc-500">{MODE_LABEL[mode]}</span>
+            <span className="cantier-muted text-xs">{MODE_LABEL[mode]}</span>
           </div>
         </div>
 
@@ -194,9 +224,7 @@ export function Pomodoro() {
                 type="button"
                 onClick={() => selectMode(m)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                  mode === m
-                    ? 'bg-amber-500/20 text-amber-200 ring-1 ring-amber-500/40'
-                    : 'bg-zinc-800/60 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                  mode === m ? 'cantier-pomo-tab-active' : 'cantier-pomo-tab'
                 }`}
               >
                 {MODE_LABEL[m]}
@@ -207,21 +235,17 @@ export function Pomodoro() {
             <button
               type="button"
               onClick={() => setRunning((r) => !r)}
-              className="flex-1 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 shadow-lg shadow-amber-900/20 transition hover:bg-amber-400"
+              className="cantier-primary-btn flex-1 px-4 py-2.5 text-sm"
             >
               {running ? 'Pauză' : 'Start'}
             </button>
-            <button
-              type="button"
-              onClick={reset}
-              className="rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-zinc-300 transition hover:border-zinc-600 hover:bg-zinc-800/50"
-            >
+            <button type="button" onClick={reset} className="cantier-secondary-btn px-4 py-2.5 text-sm">
               Reset
             </button>
           </div>
-          <p className="text-center text-[11px] leading-relaxed text-zinc-600 sm:text-left">
+          <p className="cantier-muted text-center text-[11px] leading-relaxed sm:text-left">
             Spațiu: pornește / oprește. La final de muncă trece automat la pauză (lungă la fiecare a
-            4-a rundă).
+            4-a rundă). Sunet și notificări se reglează din setări.
           </p>
         </div>
       </div>

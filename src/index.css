@@ -8,13 +8,290 @@ html {
   @apply antialiased;
 }
 
+html[data-font='sm'] {
+  font-size: 93.75%;
+}
+
+html[data-font='md'] {
+  font-size: 100%;
+}
+
+html[data-font='lg'] {
+  font-size: 112.5%;
+}
+
 body {
-  @apply m-0 min-h-svh bg-zinc-950 text-zinc-200;
+  @apply m-0 min-h-svh font-sans transition-colors duration-200;
+}
+
+html[data-theme='dark'] body {
+  @apply bg-zinc-950 text-zinc-200;
   background-image:
     radial-gradient(ellipse 120% 80% at 50% -20%, rgb(39 39 42 / 0.7), transparent),
     radial-gradient(ellipse 60% 40% at 100% 50%, rgb(120 53 15 / 0.08), transparent);
 }
 
+html[data-theme='light'] body {
+  @apply bg-zinc-100 text-zinc-800;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgb(228 228 231 / 0.9), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgb(253 230 138 / 0.25), transparent);
+}
+
+html[data-theme='contrast'] body {
+  @apply bg-black text-white;
+  background-image: none;
+}
+
 #root {
   @apply min-h-svh;
+}
+
+/* Surfaces */
+.cantier-surface {
+  @apply rounded-2xl border border-zinc-800/80 bg-zinc-900/40 shadow-xl backdrop-blur-sm;
+}
+
+html[data-theme='light'] .cantier-surface {
+  @apply border-zinc-200/90 bg-white/85 text-zinc-900 shadow-md;
+}
+
+html[data-theme='contrast'] .cantier-surface {
+  @apply border-white bg-black text-white shadow-none;
+}
+
+.cantier-settings {
+  @apply border-zinc-800/80;
+}
+
+.cantier-heading {
+  @apply text-zinc-50;
+}
+
+html[data-theme='light'] .cantier-heading {
+  @apply text-zinc-900;
+}
+
+html[data-theme='contrast'] .cantier-heading {
+  @apply text-white;
+}
+
+.cantier-tagline,
+.cantier-muted {
+  @apply text-zinc-400;
+}
+
+html[data-theme='light'] .cantier-tagline,
+html[data-theme='light'] .cantier-muted {
+  @apply text-zinc-600;
+}
+
+html[data-theme='contrast'] .cantier-tagline,
+html[data-theme='contrast'] .cantier-muted {
+  @apply text-zinc-200;
+}
+
+.cantier-body {
+  @apply text-zinc-200;
+}
+
+html[data-theme='light'] .cantier-body {
+  @apply text-zinc-800;
+}
+
+html[data-theme='contrast'] .cantier-body {
+  @apply text-white;
+}
+
+.cantier-footer {
+  @apply border-zinc-800/60 text-zinc-600;
+}
+
+html[data-theme='light'] .cantier-footer {
+  @apply border-zinc-200 text-zinc-500;
+}
+
+html[data-theme='contrast'] .cantier-footer {
+  @apply border-white text-white;
+}
+
+.cantier-card-heading {
+  @apply text-zinc-400;
+}
+
+html[data-theme='light'] .cantier-card-heading {
+  @apply text-zinc-600;
+}
+
+html[data-theme='contrast'] .cantier-card-heading {
+  @apply text-white;
+}
+
+.cantier-input,
+.cantier-textarea {
+  @apply rounded-xl border border-zinc-800 bg-zinc-950/60 text-zinc-100 placeholder:text-zinc-600;
+}
+
+html[data-theme='light'] .cantier-input,
+html[data-theme='light'] .cantier-textarea {
+  @apply border-zinc-200 bg-white text-zinc-900 placeholder:text-zinc-400;
+}
+
+html[data-theme='contrast'] .cantier-input,
+html[data-theme='contrast'] .cantier-textarea {
+  @apply border-white bg-black text-white placeholder:text-zinc-300;
+}
+
+.cantier-input:focus,
+.cantier-textarea:focus {
+  @apply border-amber-500/40 ring-2 ring-amber-500/20 outline-none;
+}
+
+html[data-theme='contrast'] .cantier-input:focus,
+html[data-theme='contrast'] .cantier-textarea:focus {
+  @apply border-yellow-300 ring-yellow-300/40;
+}
+
+.cantier-select {
+  @apply rounded-lg border border-zinc-700 bg-zinc-950/80 px-2 py-1.5 text-sm text-zinc-100;
+}
+
+html[data-theme='light'] .cantier-select {
+  @apply border-zinc-300 bg-white text-zinc-900;
+}
+
+html[data-theme='contrast'] .cantier-select {
+  @apply border-white bg-black text-white;
+}
+
+.cantier-checkbox {
+  @apply border-zinc-600 bg-zinc-950 accent-amber-500;
+}
+
+html[data-theme='light'] .cantier-checkbox {
+  @apply border-zinc-400 bg-white accent-amber-600;
+}
+
+html[data-theme='contrast'] .cantier-checkbox {
+  @apply border-white bg-black accent-yellow-300;
+}
+
+.cantier-primary-btn {
+  @apply rounded-xl bg-amber-500 font-semibold text-zinc-950 shadow-lg shadow-amber-900/20 transition hover:bg-amber-400;
+}
+
+html[data-theme='light'] .cantier-primary-btn {
+  @apply text-zinc-900 shadow-amber-200/50;
+}
+
+html[data-theme='contrast'] .cantier-primary-btn {
+  @apply bg-yellow-300 text-black shadow-none hover:bg-yellow-200;
+}
+
+.cantier-secondary-btn {
+  @apply rounded-xl border border-zinc-700 text-zinc-300 transition hover:border-zinc-600 hover:bg-zinc-800/50;
+}
+
+html[data-theme='light'] .cantier-secondary-btn {
+  @apply border-zinc-300 text-zinc-700 hover:bg-zinc-100;
+}
+
+html[data-theme='contrast'] .cantier-secondary-btn {
+  @apply border-white text-white hover:bg-zinc-900;
+}
+
+.cantier-kbd {
+  @apply rounded border border-zinc-700 bg-zinc-900 font-mono text-[10px] text-zinc-400;
+}
+
+html[data-theme='light'] .cantier-kbd {
+  @apply border-zinc-300 bg-zinc-100 text-zinc-600;
+}
+
+html[data-theme='contrast'] .cantier-kbd {
+  @apply border-white bg-black text-white;
+}
+
+.cantier-ring-track {
+  @apply text-zinc-800;
+}
+
+html[data-theme='light'] .cantier-ring-track {
+  @apply text-zinc-200;
+}
+
+html[data-theme='contrast'] .cantier-ring-track {
+  @apply text-zinc-700;
+}
+
+.cantier-ring-fill {
+  @apply text-amber-500/90;
+}
+
+html[data-theme='light'] .cantier-ring-fill {
+  @apply text-amber-600;
+}
+
+html[data-theme='contrast'] .cantier-ring-fill {
+  @apply text-yellow-300;
+}
+
+.cantier-pomo-tab-active {
+  @apply bg-amber-500/20 text-amber-200 ring-1 ring-amber-500/40;
+}
+
+html[data-theme='light'] .cantier-pomo-tab-active {
+  @apply bg-amber-100 text-amber-900 ring-amber-400/60;
+}
+
+html[data-theme='contrast'] .cantier-pomo-tab-active {
+  @apply bg-yellow-300 text-black ring-yellow-200;
+}
+
+.cantier-pomo-tab {
+  @apply bg-zinc-800/60 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200;
+}
+
+html[data-theme='light'] .cantier-pomo-tab {
+  @apply bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900;
+}
+
+html[data-theme='contrast'] .cantier-pomo-tab {
+  @apply bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-white;
+}
+
+.cantier-timer {
+  @apply text-zinc-100;
+}
+
+html[data-theme='light'] .cantier-timer {
+  @apply text-zinc-900;
+}
+
+html[data-theme='contrast'] .cantier-timer {
+  @apply text-white;
+}
+
+.cantier-msg-ok {
+  color: rgb(52 211 153);
+}
+
+html[data-theme='light'] .cantier-msg-ok {
+  color: rgb(5 150 105);
+}
+
+html[data-theme='contrast'] .cantier-msg-ok {
+  color: rgb(110 231 183);
+}
+
+.cantier-msg-err {
+  color: rgb(248 113 113);
+}
+
+html[data-theme='light'] .cantier-msg-err {
+  color: rgb(220 38 38);
+}
+
+html[data-theme='contrast'] .cantier-msg-err {
+  color: rgb(252 165 165);
 }
