@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
+import { STORAGE } from '../lib/storageKeys'
+import { sanitizeCantierSettings } from '../lib/sanitizeSettings'
 
 export function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {
       const raw = localStorage.getItem(key)
       if (raw == null) return initial
-      return JSON.parse(raw) as T
+      const parsed: unknown = JSON.parse(raw)
+      if (key === STORAGE.settings) {
+        return sanitizeCantierSettings(parsed) as T
+      }
+      return parsed as T
     } catch {
       return initial
     }
@@ -13,7 +19,11 @@ export function useLocalStorage<T>(key: string, initial: T) {
 
   useEffect(() => {
     try {
-      localStorage.setItem(key, JSON.stringify(value))
+      const toStore =
+        key === STORAGE.settings && value !== null && typeof value === 'object'
+          ? sanitizeCantierSettings(value as unknown)
+          : value
+      localStorage.setItem(key, JSON.stringify(toStore))
     } catch {
       /* ignore quota / private mode */
     }

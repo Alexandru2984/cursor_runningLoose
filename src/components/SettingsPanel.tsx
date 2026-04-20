@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { applyBackup, downloadBackup } from '../lib/backup'
+import { applyBackup, assertBackupFileSizeOk, downloadBackup } from '../lib/backup'
 import { requestNotificationPermission } from '../lib/notify'
 import { useSettings } from '../context/useSettings'
 import type { FontScale, ThemeId } from '../lib/settingsTypes'
@@ -29,6 +29,11 @@ export function SettingsPanel() {
   const onImportFile = useCallback(async (file: File | null) => {
     setImportMsg(null)
     if (!file) return
+    const sizeCheck = assertBackupFileSizeOk(file.size)
+    if (!sizeCheck.ok) {
+      setImportMsg({ type: 'err', text: sizeCheck.error })
+      return
+    }
     try {
       const text = await file.text()
       const data = JSON.parse(text) as unknown

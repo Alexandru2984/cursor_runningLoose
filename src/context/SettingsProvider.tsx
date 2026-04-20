@@ -8,6 +8,7 @@ import {
   type ThemeId,
 } from '../lib/settingsTypes'
 import { CantierSettingsContext } from './cantierSettingsContext'
+import { sanitizeCantierSettings } from '../lib/sanitizeSettings'
 
 const THEME_COLOR: Record<ThemeId, string> = {
   dark: '#09090b',
@@ -17,7 +18,7 @@ const THEME_COLOR: Record<ThemeId, string> = {
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [stored, setStored] = useLocalStorage<CantierSettings>(STORAGE.settings, defaultSettings)
-  const settings = useMemo(() => ({ ...defaultSettings, ...stored }), [stored])
+  const settings = useMemo(() => sanitizeCantierSettings(stored), [stored])
 
   useEffect(() => {
     document.documentElement.dataset.theme = settings.theme
@@ -28,7 +29,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const patchSettings = useCallback(
     (p: Partial<CantierSettings>) => {
-      setStored((prev) => ({ ...defaultSettings, ...prev, ...p }))
+      setStored((prev) => sanitizeCantierSettings({ ...defaultSettings, ...prev, ...p }))
     },
     [setStored],
   )
